@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testoz | Next-Gen Developer & Testing Platform</title>
+  <meta name="description" content="Testoz is an ultra-fast, intelligent testing and developer workflow platform designed for high-performing engineering teams." />
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Testoz | Next-Gen Developer & Testing Platform" />
+  <meta property="og:description" content="Streamline testing, observe metrics, and deploy with confidence using AI-driven insight engines." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://vocalpalsy.github.io/testoz/" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Background Glow & Mesh Grid -->
+  <div class="bg-mesh" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand-logo" id="nav-brand">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Testoz</span>
+      </a>
+
+      <nav class="nav-links" id="nav-menu">
+        <a href="#features" class="nav-link" id="link-features">Features</a>
+        <a href="#showcase" class="nav-link" id="link-showcase">Showcase</a>
+        <a href="#metrics" class="nav-link" id="link-metrics">Metrics</a>
+        <a href="#cta" class="nav-link" id="link-cta">Get Started</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/VocalPalsy/testoz" target="_blank" rel="noopener noreferrer" class="github-btn" id="btn-github-nav">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span>Star on GitHub</span>
+        </a>
+        <button class="mobile-toggle" id="btn-mobile-toggle" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+      <div class="container">
+        <div class="badge-container">
+          <span class="badge" id="badge-version">
+            <span class="badge-pulse"></span>
+            Testoz v1.0 Published to GitHub Pages
+          </span>
+        </div>
+
+        <h1 class="hero-title" id="hero-heading">
+          Next-Gen Workflows for <span class="text-gradient">Modern Engineering</span>
+        </h1>
+
+        <p class="hero-subtitle" id="hero-subheading">
+          Automate testing pipelines, gain real-time execution insights, and deliver resilient software faster than ever before.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#cta" class="btn btn-primary" id="btn-hero-primary">
+            <span>Get Started Free</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#showcase" class="btn btn-secondary" id="btn-hero-secondary">
+            <span>Explore Demo</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </a>
+        </div>
+
+        <!-- Dashboard UI Visual Card -->
+        <div class="hero-preview" id="hero-preview">
+          <div class="glass-card mockup-window">
+            <div class="mockup-header">
+              <div class="mockup-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="mockup-title">testoz-pipeline.config.ts</div>
+              <div class="mockup-badge">LIVE MONITORING</div>
+            </div>
+
+            <div class="mockup-body">
+              <div class="code-panel">
+                <div class="code-line"><span class="c-purple">import</span> { <span class="c-blue">defineTestoz</span>, <span class="c-blue">pipeline</span> } <span class="c-purple">from</span> <span class="c-green">'@testoz/core'</span>;</div>
+                <div class="code-line">&nbsp;</div>
+                <div class="code-line"><span class="c-purple">export default</span> <span class="c-yellow">defineTestoz</span>({</div>
+                <div class="code-line">&nbsp;&nbsp;concurrency: <span class="c-orange">64</span>,</div>
+                <div class="code-line">&nbsp;&nbsp;telemetry: { realtime: <span class="c-purple">true</span>, aiDiagnostics: <span class="c-purple">true</span> },</div>
+                <div class="code-line">&nbsp;&nbsp;steps: [</div>
+                <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">pipeline</span>.<span class="c-blue">audit</span>({ strictMode: <span class="c-purple">true</span> }),</div>
+                <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">pipeline</span>.<span class="c-blue">execute</span>({ coverageThreshold: <span class="c-orange">98.5</span> })</div>
+                <div class="code-line">&nbsp;&nbsp;]</div>
+                <div class="code-line">});</div>
+              </div>
+
+              <div class="status-panel">
+                <div class="status-card">
+                  <div class="status-header">
+                    <span class="status-label">Overall Health</span>
+                    <span class="status-value green-text">99.98%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill fill-green"></div></div>
+                </div>
+
+                <div class="status-card">
+                  <div class="status-header">
+                    <span class="status-label">Test Speedup</span>
+                    <span class="status-value cyan-text">12.4x</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill fill-cyan"></div></div>
+                </div>
+
+                <div class="console-ticker">
+                  <div class="ticker-item"><span class="tick-icon">✓</span> [SUCCESS] 4,820 tests executed in 412ms</div>
+                  <div class="ticker-item"><span class="tick-icon">✓</span> [AI DIAGNOSTICS] Zero flaky test regressions detected</div>
+                  <div class="ticker-item"><span class="tick-icon">⚡</span> [EDGE DISPATCH] Shared 12 worker threads</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metrics Section -->
+    <section class="metrics-section" id="metrics">
+      <div class="container">
+        <div class="metrics-grid">
+          <div class="metric-card" id="metric-1">
+            <h3 class="metric-number" data-target="99.99">0%</h3>
+            <p class="metric-label">Execution Reliability</p>
+          </div>
+          <div class="metric-card" id="metric-2">
+            <h3 class="metric-number" data-target="10">0x</h3>
+            <p class="metric-label">Average Pipeline Speedup</p>
+          </div>
+          <div class="metric-card" id="metric-3">
+            <h3 class="metric-number" data-target="50">0M+</h3>
+            <p class="metric-label">Automated Tests Executed</p>
+          </div>
+          <div class="metric-card" id="metric-4">
+            <h3 class="metric-number" data-target="150">0k+</h3>
+            <p class="metric-label">Happy Engineers</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">ENGINEERING POWER</span>
+          <h2 class="section-title">Architected for Speed & Reliability</h2>
+          <p class="section-subtitle">Everything you need to ship quality code at scale without friction.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card" id="feature-1">
+            <div class="feature-icon glow-purple">⚡</div>
+            <h3 class="feature-title">Ultra-Fast Parallel Engine</h3>
+            <p class="feature-desc">Execute thousands of test cases concurrently using micro-task scheduling and smart cache reuse.</p>
+          </div>
+
+          <div class="feature-card" id="feature-2">
+            <div class="feature-icon glow-cyan">🛡️</div>
+            <h3 class="feature-title">Zero-Config Security Auditing</h3>
+            <p class="feature-desc">Automated dependency scanning, secret detection, and vulnerability reporting built right in.</p>
+          </div>
+
+          <div class="feature-card" id="feature-3">
+            <div class="feature-icon glow-green">📊</div>
+            <h3 class="feature-title">Real-Time Telemetry</h3>
+            <p class="feature-desc">Stream instant build metrics, memory usage, and performance trends directly to your dashboard.</p>
+          </div>
+
+          <div class="feature-card" id="feature-4">
+            <div class="feature-icon glow-pink">🤖</div>
+            <h3 class="feature-title">AI Failure Root-Cause Analysis</h3>
+            <p class="feature-desc">Instantaneous stacktrace grouping and AI suggestions pinpoint exact source lines causing errors.</p>
+          </div>
+
+          <div class="feature-card" id="feature-5">
+            <div class="feature-icon glow-yellow">🔄</div>
+            <h3 class="feature-title">Native GitHub Actions Support</h3>
+            <p class="feature-desc">Plug seamlessly into your existing workflows with minimal YAML configuration needed.</p>
+          </div>
+
+          <div class="feature-card" id="feature-6">
+            <div class="feature-icon glow-blue">🌐</div>
+            <h3 class="feature-title">Edge Multi-Region Dispatch</h3>
+            <p class="feature-desc">Distribute workload across global edge nodes for sub-100ms response times anywhere in the world.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Showcase Section -->
+    <section class="showcase-section" id="showcase">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">LIVE INTERACTIVE INTERFACE</span>
+          <h2 class="section-title">Experience the Testoz Engine</h2>
+          <p class="section-subtitle">Switch tabs to see how Testoz transforms every stage of your developer workflow.</p>
+        </div>
+
+        <div class="showcase-wrapper">
+          <div class="tab-buttons" id="showcase-tabs">
+            <button class="tab-btn active" data-tab="telemetry" id="tab-telemetry">
+              <span>📊 Real-Time Telemetry</span>
+            </button>
+            <button class="tab-btn" data-tab="ai" id="tab-ai">
+              <span>🤖 AI Root-Cause</span>
+            </button>
+            <button class="tab-btn" data-tab="cicd" id="tab-cicd">
+              <span>🔄 CI/CD Pipelines</span>
+            </button>
+          </div>
+
+          <div class="tab-contents">
+            <!-- Tab 1 content -->
+            <div class="tab-content active" id="content-telemetry">
+              <div class="tab-grid">
+                <div class="tab-info">
+                  <h3>Instant Visibility Into Every Build</h3>
+                  <p>Never wait in the dark. Testoz streams memory, CPU utilization, and execution trace graphs live as your test suite runs.</p>
+                  <ul class="tab-checklist">
+                    <li><span class="check">✓</span> Live streaming log terminal</li>
+                    <li><span class="check">✓</span> Automated flaky test detection</li>
+                    <li><span class="check">✓</span> Sub-millisecond step profiling</li>
+                  </ul>
+                </div>
+                <div class="tab-preview glass-card">
+                  <div class="graph-box">
+                    <div class="graph-bar-group">
+                      <div class="bar" style="--height: 40%"></div>
+                      <div class="bar" style="--height: 65%"></div>
+                      <div class="bar" style="--height: 85%"></div>
+                      <div class="bar" style="--height: 50%"></div>
+                      <div class="bar active" style="--height: 95%"></div>
+                      <div class="bar" style="--height: 70%"></div>
+                    </div>
+                    <div class="graph-legend">
+                      <span class="legend-dot cyan"></span> Throughput: 4,200 ops/sec
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2 content -->
+            <div class="tab-content" id="content-ai">
+              <div class="tab-grid">
+                <div class="tab-info">
+                  <h3>AI Diagnostic Insights</h3>
+                  <p>When a test fails, Testoz analyzes the diff, recent commits, and environment variables to suggest an immediate fix.</p>
+                  <ul class="tab-checklist">
+                    <li><span class="check">✓</span> Automated stacktrace deduplication</li>
+                    <li><span class="check">✓</span> One-click automated patch suggestions</li>
+                    <li><span class="check">✓</span> Contextual regression tracking</li>
+                  </ul>
+                </div>
+                <div class="tab-preview glass-card">
+                  <div class="ai-box">
+                    <div class="ai-header">
+                      <span class="ai-spark">✨</span> AI Root-Cause Summary
+                    </div>
+                    <div class="ai-suggestion">
+                      "Assertion failure on line 42 in <code>auth.spec.ts</code> caused by missing authorization token in header. Recommended fix: update test context mock."
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3 content -->
+            <div class="tab-content" id="content-cicd">
+              <div class="tab-grid">
+                <div class="tab-info">
+                  <h3>Seamless GitHub & CI/CD Integration</h3>
+                  <p>Drop a single YAML step into your GitHub Actions setup to enable distributed caching and instant status checks.</p>
+                  <ul class="tab-checklist">
+                    <li><span class="check">✓</span> Zero setup overhead</li>
+                    <li><span class="check">✓</span> Automatic pull request status comments</li>
+                    <li><span class="check">✓</span> Smart delta execution (only test changed code)</li>
+                  </ul>
+                </div>
+                <div class="tab-preview glass-card">
+                  <pre class="yaml-code"><code><span class="c-purple">name</span>: Testoz Workflow
+<span class="c-purple">on</span>: [push, pull_request]
+<span class="c-purple">jobs</span>:
+  <span class="c-blue">test</span>:
+    <span class="c-purple">runs-on</span>: ubuntu-latest
+    <span class="c-purple">steps</span>:
+      - <span class="c-purple">uses</span>: actions/checkout@v4
+      - <span class="c-purple">uses</span>: VocalPalsy/testoz-action@v1
+        <span class="c-purple">with</span>:
+          <span class="c-blue">api-token</span>: <span class="c-green">${{ secrets.TESTOZ_TOKEN }}</span></code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section" id="cta">
+      <div class="container">
+        <div class="cta-box glass-card">
+          <div class="cta-content">
+            <h2 class="cta-title">Ready to Transform Your Developer Workflow?</h2>
+            <p class="cta-subtitle">Get started with Testoz today on GitHub Pages. Open-source, lightweight, and blazing fast.</p>
+            
+            <form class="cta-form" id="cta-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing to Testoz updates!');">
+              <input type="email" class="cta-input" placeholder="Enter your email for updates..." required id="input-email" />
+              <button type="submit" class="btn btn-primary" id="btn-subscribe">
+                <span>Start Free</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <a href="#" class="brand-logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">Testoz</span>
+        </a>
+        <p class="footer-desc">Empowering developers with fast, intelligent workflow automation.</p>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <a href="#features">Features</a>
+          <a href="#showcase">Showcase</a>
+          <a href="#metrics">Metrics</a>
+        </div>
+        <div class="footer-col">
+          <h4>Repository</h4>
+          <a href="https://github.com/VocalPalsy/testoz" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+          <a href="https://vocalpalsy.github.io/testoz/">GitHub Pages Site</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container bottom-flex">
+        <p>&copy; 2026 Testoz Project. Built with HTML, CSS & JavaScript.</p>
+        <a href="#hero" class="back-to-top" id="btn-back-to-top">↑ Back to top</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript Script -->
+  <script src="app.js"></script>
+</body>
+</html>
