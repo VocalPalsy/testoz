@@ -102,6 +102,75 @@
       font-weight: 500;
     }
 
+    /* Travel Alert Ticker Banner */
+    .travel-ticker-banner {
+      background: linear-gradient(90deg, #450a0a 0%, #1e1b4b 100%);
+      border-bottom: 1px solid rgba(239, 68, 68, 0.35);
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.76rem;
+      color: #fecaca;
+      position: relative;
+    }
+
+    .ticker-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .ticker-badge {
+      background: #ef4444;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+    }
+
+    .ticker-text-wrapper {
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .ticker-text {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee 24s linear infinite;
+    }
+
+    .ticker-text:hover {
+      animation-play-state: paused;
+    }
+
+    .ticker-close-btn {
+      background: none;
+      border: none;
+      color: #fecaca;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 2px 4px;
+      opacity: 0.8;
+      transition: opacity 0.15s;
+    }
+    .ticker-close-btn:hover { opacity: 1; }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
     /* Mobile Nav Bar */
     .mobile-tab-nav {
       display: none;
@@ -448,6 +517,22 @@
       </div>
     </div>
 
+    <!-- Travel Alert Ticker Banner -->
+    <div class="travel-ticker-banner" id="travelTicker">
+      <div class="ticker-content" id="tickerContent" title="Click to view station on map">
+        <span class="ticker-badge">TfL Alert</span>
+        <div class="ticker-text-wrapper">
+          <span class="ticker-text">
+            ⛔ <strong>Ladbroke Grove Station:</strong> CLOSED ALL WEEKEND &nbsp;•&nbsp; 
+            ⚠️ <strong>Westbourne Park:</strong> EXIT ONLY from 11:00 AM &nbsp;•&nbsp; 
+            ⚠️ <strong>Holland Park:</strong> Closes early ~15:00 &nbsp;•&nbsp; 
+            ℹ️ <strong>Recommended Alternatives:</strong> Bayswater & Queensway Stations
+          </span>
+        </div>
+      </div>
+      <button class="ticker-close-btn" id="tickerCloseBtn" title="Dismiss Banner">✕</button>
+    </div>
+
     <div class="controls-container">
       <!-- Search Input -->
       <div class="search-row">
@@ -792,6 +877,9 @@
     const tradingLayer = L.layerGroup().addTo(map);
     const systemsLayer = L.layerGroup().addTo(map);
 
+    // Tube Station Markers Map Lookup
+    const stationMarkersByName = {};
+
     // Tube Stations Setup
     tubeStations.forEach(st => {
       const isClosed = st.statusType === 'closed';
@@ -816,7 +904,31 @@
         </div>
       `;
 
-      L.marker([st.lat, st.lng], { icon }).bindPopup(popupContent).addTo(stationsLayer);
+      const m = L.marker([st.lat, st.lng], { icon }).bindPopup(popupContent).addTo(stationsLayer);
+      stationMarkersByName[st.name] = { marker: m, lat: st.lat, lng: st.lng };
+    });
+
+    // Ticker Click & Close Logic
+    const tickerContent = document.getElementById('tickerContent');
+    const tickerCloseBtn = document.getElementById('tickerCloseBtn');
+    const travelTicker = document.getElementById('travelTicker');
+
+    tickerContent.addEventListener('click', () => {
+      // Jump to Ladbroke Grove Station as primary alert
+      const target = stationMarkersByName["Ladbroke Grove Station"];
+      if (target) {
+        map.flyTo([target.lat, target.lng], 16, { animate: true, duration: 0.6 });
+        target.marker.openPopup();
+
+        if (window.innerWidth <= 768) {
+          document.getElementById('btn-tab-map').click();
+        }
+      }
+    });
+
+    tickerCloseBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      travelTicker.style.display = 'none';
     });
 
     // Parade Route Setup
