@@ -3,388 +3,689 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Testoz | Next-Gen Developer & Testing Platform</title>
-  <meta name="description" content="Testoz is an ultra-fast, intelligent testing and developer workflow platform designed for high-performing engineering teams." />
+  <title>Notting Hill Carnival 2026 - Interactive Map & Navigator</title>
   
-  <!-- Open Graph / Social Media -->
-  <meta property="og:title" content="Testoz | Next-Gen Developer & Testing Platform" />
-  <meta property="og:description" content="Streamline testing, observe metrics, and deploy with confidence using AI-driven insight engines." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://vocalpalsy.github.io/testoz/" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --primary: #f59e0b;
+      --accent: #dc2626;
+      --bg: #0b0f19;
+      --card-bg: #131d31;
+      --card-sub: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  
-  <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css" />
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+    #sidebar {
+      width: 440px;
+      height: 100%;
+      background: var(--card-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 1000;
+    }
+
+    .header { padding: 14px 16px; border-bottom: 1px solid var(--border); background: #0c1424; }
+    .header h1 { font-size: 1.15rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .header h1 span { color: var(--primary); }
+    .header p { font-size: 0.76rem; color: var(--muted); margin-top: 3px; }
+
+    .controls-container { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; background: #111a2c; }
+    
+    .search-row input {
+      width: 100%; padding: 8px 11px; border-radius: 6px; border: 1px solid var(--border);
+      background: #090e17; color: #fff; font-size: 0.82rem; outline: none;
+    }
+    .search-row input:focus { border-color: var(--primary); }
+
+    .action-row { display: flex; justify-content: space-between; align-items: center; }
+    .btn-action {
+      background: #25334d; border: 1px solid var(--border); color: #cbd5e1; font-size: 0.72rem;
+      padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: 0.2s;
+    }
+    .btn-action:hover { background: #334466; color: #fff; }
+    .active-count { font-size: 0.74rem; font-weight: 600; color: var(--primary); }
+
+    .genres-wrapper {
+      max-height: 110px;
+      overflow-y: auto;
+      padding: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      border: 1px solid #1e293b;
+      background: #0a0f1d;
+      border-radius: 6px;
+    }
+    .genre-chip {
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .genre-chip:hover { border-color: #64748b; color: #fff; }
+    .genre-chip.active {
+      background: #d97706;
+      border-color: #f59e0b;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+    }
+
+    .layer-toggles { display: flex; gap: 5px; flex-wrap: wrap; }
+    .layer-toggle-btn {
+      padding: 4px 8px; border-radius: 4px; background: #182234; border: 1px solid #334155;
+      color: #cbd5e1; cursor: pointer; font-size: 0.71rem; font-weight: 600;
+    }
+    .layer-toggle-btn.active { background: #0369a1; border-color: #38bdf8; color: #fff; }
+
+    #system-list { flex: 1; overflow-y: auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .list-card {
+      padding: 9px 11px;
+      background: var(--card-sub);
+      border-radius: 6px;
+      border-left: 4px solid var(--primary);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .list-card:hover { background: #27354f; }
+    .card-title { font-size: 0.86rem; font-weight: 700; color: #fff; }
+    .card-genres { font-size: 0.73rem; color: #38bdf8; margin-top: 3px; font-weight: 500; }
+
+    #map { flex: 1; height: 100%; }
+
+    /* Custom Pins */
+    .system-pin {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #d97706; color: #fff; font-size: 13px;
+      border: 2px solid #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+    .facility-pin {
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 5px; font-weight: 800;
+      border: 1.5px solid #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+    .pin-wc { width: 22px; height: 22px; background: #0284c7; color: #ffffff; font-size: 9.5px; }
+    .pin-firstaid { width: 22px; height: 22px; background: #16a34a; color: #ffffff; font-size: 13px; font-weight: 900; }
+    .pin-welfare { width: 22px; height: 22px; background: #db2777; color: #ffffff; font-size: 12px; }
+    
+    /* Clear Vector Trading Pin */
+    .pin-trading {
+      width: 24px; height: 24px;
+      background: #ea580c;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      border-radius: 6px;
+    }
+
+    /* Tube Roundel Icon Marker */
+    .tube-roundel-pin {
+      width: 28px; height: 28px; border-radius: 50%; border: 3.5px solid #dc2626;
+      background: #ffffff; position: relative; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6); cursor: pointer;
+    }
+    .tube-roundel-bar {
+      width: 30px; height: 7px; background: #0019a8; position: absolute; border-radius: 1px;
+    }
+    .tube-roundel-closed { border-color: #64748b; }
+    .tube-roundel-closed .tube-roundel-bar { background: #475569; }
+
+    /* Route Double Arrow Container */
+    .route-arrow-marker {
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+
+    /* Popup & Navigation Buttons */
+    .leaflet-popup-content-wrapper { background: #131d31; color: #f8fafc; border-radius: 8px; border: 1px solid #334155; }
+    .leaflet-popup-tip { background: #131d31; }
+    .popup-title { font-size: 0.95rem; font-weight: 700; color: #f59e0b; margin-bottom: 4px; }
+    .popup-badge-list { display: flex; flex-wrap: wrap; gap: 3px; margin: 6px 0; }
+    .popup-badge { background: #1e293b; color: #38bdf8; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; border: 1px solid #334155; }
+
+    .nav-box { margin-top: 8px; padding-top: 8px; border-top: 1px solid #334155; }
+    .nav-label { font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+    .nav-buttons { display: flex; gap: 5px; flex-wrap: wrap; }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.72rem; font-weight: 700; text-decoration: none;
+      padding: 4px 8px; border-radius: 4px; color: #fff; transition: opacity 0.15s;
+    }
+    .nav-btn:hover { opacity: 0.85; }
+    .nav-btn-gmaps { background: #1a73e8; }
+    .nav-btn-apple { background: #000000; border: 1px solid #475569; }
+    .nav-btn-citymapper { background: #28be00; }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      #sidebar { width: 100%; height: 48vh; order: 2; }
+      #map { height: 52vh; order: 1; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Background Glow & Mesh Grid -->
-  <div class="bg-mesh" aria-hidden="true">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-    <div class="grid-overlay"></div>
+  <div id="sidebar">
+    <div class="header">
+      <h1><span>🔊</span> NHC Interactive Map & Navigator</h1>
+      <p>37 Sound Systems • Tube Stations • 40 Toilets • Aid & Stalls</p>
+    </div>
+
+    <div class="controls-container">
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="Search sound system or genre..." />
+      </div>
+
+      <div class="action-row">
+        <span class="active-count" id="matchCounter">Showing 37 Systems</span>
+        <div style="display:flex; gap: 4px;">
+          <button class="btn-action" id="clearGenresBtn">Clear Filters</button>
+          <button class="btn-action" id="selectAllGenresBtn">Select All</button>
+        </div>
+      </div>
+
+      <!-- Genres -->
+      <div class="genres-wrapper" id="genreContainer"></div>
+
+      <!-- Category Toggles -->
+      <div class="layer-toggles">
+        <button class="layer-toggle-btn active" data-layer="systems">Sound Systems (37)</button>
+        <button class="layer-toggle-btn active" data-layer="toilets">Toilets (40 WC)</button>
+        <button class="layer-toggle-btn active" data-layer="firstaid">First Aid (8)</button>
+        <button class="layer-toggle-btn active" data-layer="welfare">Welfare (5)</button>
+        <button class="layer-toggle-btn active" data-layer="trading">Street Trading (19)</button>
+        <button class="layer-toggle-btn active" data-layer="stations">Tube Stations</button>
+        <button class="layer-toggle-btn active" data-layer="parade">Parade Route</button>
+        <button class="layer-toggle-btn active" data-layer="boundary">Boundary</button>
+      </div>
+    </div>
+
+    <div id="system-list"></div>
   </div>
 
-  <!-- Navigation Bar -->
-  <header class="navbar" id="navbar">
-    <div class="nav-container">
-      <a href="#" class="brand-logo" id="nav-brand">
-        <span class="logo-icon">⚡</span>
-        <span class="logo-text">Testoz</span>
-      </a>
+  <div id="map"></div>
 
-      <nav class="nav-links" id="nav-menu">
-        <a href="#features" class="nav-link" id="link-features">Features</a>
-        <a href="#showcase" class="nav-link" id="link-showcase">Showcase</a>
-        <a href="#metrics" class="nav-link" id="link-metrics">Metrics</a>
-        <a href="#cta" class="nav-link" id="link-cta">Get Started</a>
-      </nav>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // 37 Sound Systems
+    const soundSystems = [
+      { name: "MASTERMIND", genres: ["Hip-Hop", "R&B", "Garage"], lat: 51.52598712274683, lng: -0.21548736555230646 },
+      { name: "G.I. ROADSHOW", genres: ["Caribbean Party Music", "Dancehall", "Reggae"], lat: 51.526387623886556, lng: -0.21383512484385014 },
+      { name: "4 PLAY", genres: ["Deep House", "Vocal House", "Soulful House", "Electronic"], lat: 51.52626747391452, lng: -0.21393168436577292 },
+      { name: "SSP", genres: ["Acid Techno", "Techno", "Psy-Trance", "Electronic"], lat: 51.525089319853116, lng: -0.21348107327348448 },
+      { name: "GT FLEX ROADSHOW", genres: ["Bashment", "Dancehall", "Caribbean Party Music"], lat: 51.52612062352309, lng: -0.2116357134156319 },
+      { name: "ABA SHANTI", genres: ["Roots Reggae", "Dub", "Steppers"], lat: 51.524672119237906, lng: -0.2110027121052493 },
+      { name: "STARLINER DIAMOND", genres: ["Soca", "Calypso"], lat: 51.52435838182402, lng: -0.20931828488948537 },
+      { name: "ROUGH BUT SWEET", genres: ["Soul", "R&B", "Rare Groove", "Lovers Rock", "Reggae"], lat: 51.52527956211005, lng: -0.20841706262331366 },
+      { name: "LOVE TKO", genres: ["Reggae", "Dancehall", "Urban"], lat: 51.52419149932137, lng: -0.2061103629329363 },
+      { name: "SIR VALDEZ", genres: ["Hip-Hop", "R&B", "Urban"], lat: 51.52380099191248, lng: -0.2070276783951228 },
+      { name: "RAPATTACK", genres: ["Hip-Hop", "Neo-Soul", "R&B", "Funk"], lat: 51.51837359352443, lng: -0.20393240914402513 },
+      { name: "PEOPLE'S SOUND", genres: ["Reggae", "Roots Reggae", "Caribbean Riddims"], lat: 51.517919612070344, lng: -0.20383048521917194 },
+      { name: "DIFFERENT STROKES", genres: ["Jungle", "Garage", "Drill", "Hip-Hop"], lat: 51.51854717345845, lng: -0.20202267639206223 },
+      { name: "KILLERWATT", genres: ["Urban", "Hip-Hop", "Reggae"], lat: 51.519304908929904, lng: -0.20296681393975158 },
+      { name: "SIR LLOYD", genres: ["Lovers Rock", "R&B", "Soul"], lat: 51.51959197722542, lng: -0.20239282122609953 },
+      { name: "CHANNEL ONE", genres: ["Roots Reggae", "Dub", "Dubwise"], lat: 51.51815995575302, lng: -0.20046699518476693 },
+      { name: "KING TUBBY'S", genres: ["Reggae", "Dub"], lat: 51.51668783076987, lng: -0.20353544223276043 },
+      { name: "RAMPAGE", genres: ["Garage", "Hip-Hop", "Grime", "Drum & Bass"], lat: 51.515542811783966, lng: -0.20268249978547967 },
+      { name: "NASTY LOVE", genres: ["Dancehall", "Bashment", "Reggae"], lat: 51.51584993339947, lng: -0.20236599913028835 },
+      { name: "TROJAN 7", genres: ["Reggae", "Dub"], lat: 51.51580987417576, lng: -0.20124483579240726 },
+      { name: "DISYA JENERATION", genres: ["Jungle", "Breakbeat", "Drum & Bass"], lat: 51.5177026340122, lng: -0.20140040388391056 },
+      { name: "METRO GLORY", genres: ["House", "Tech House", "Electronic"], lat: 51.51791293580427, lng: -0.20052063935083642 },
+      { name: "GAZ'S ROCKIN' BLUES", genres: ["Rockabilly", "Ska", "Blues", "Punk", "Rock"], lat: 51.51659436090723, lng: -0.20069230072314356 },
+      { name: "SOLUTION SOUND", genres: ["Roots Reggae", "Dub"], lat: 51.51673122741885, lng: -0.20001101965179954 },
+      { name: "PLATINUM SOUND", genres: ["Soulful House", "Funky House", "House", "Electronic"], lat: 51.51705169373968, lng: -0.1978008793788106 },
+      { name: "MARK ROSS", genres: ["Soul", "Funk", "R&B"], lat: 51.51517559842785, lng: -0.19956040846862433 },
+      { name: "SEDUCTION CITY", genres: ["Reggae", "Dub", "Lovers Rock"], lat: 51.523146801009666, lng: -0.21256912220348462 },
+      { name: "VOLCANO", genres: ["Dancehall", "Ragga"], lat: 51.52247257408045, lng: -0.2105306434073372 },
+      { name: "ARTS-A-LIGHT", genres: ["Roots Reggae", "Reggae"], lat: 51.52173158049573, lng: -0.21089542382348989 },
+      { name: "KCC & THE ROCKIN CREW", genres: ["Deep House", "House", "Bassline", "Garage"], lat: 51.52277297345026, lng: -0.20917881010041836 },
+      { name: "LATIN RAVE STREET JAM", genres: ["Latin", "Salsa", "Reggaeton", "Merengue", "Baile Funk"], lat: 51.52138444421869, lng: -0.21018732066272292 },
+      { name: "GLADDY WAX", genres: ["Ska", "Rocksteady", "Roots Reggae"], lat: 51.52067681206401, lng: -0.20886767382478247 },
+      { name: "SAXON STUDIO", genres: ["Dancehall", "Reggae"], lat: 51.52033634362405, lng: -0.2108203219347763 },
+      { name: "HIGH GRADE", genres: ["Soul", "Rare Groove", "R&B", "Reggae"], lat: 51.519014500808915, lng: -0.21033752427812197 },
+      { name: "VIRGO INTERNATIONAL", genres: ["Dancehall", "Bashment", "Reggae"], lat: 51.51910796569977, lng: -0.20707595820428612 },
+      { name: "LORD GELLY", genres: ["Soca", "Calypso"], lat: 51.51828680331292, lng: -0.2099190996831233 },
+      { name: "Magnum Stage", genres: ["Live Stage", "Soca", "Calypso", "Reggae"], lat: 51.515300, lng: -0.200800 }
+    ];
 
-      <div class="nav-actions">
-        <a href="https://github.com/VocalPalsy/testoz" target="_blank" rel="noopener noreferrer" class="github-btn" id="btn-github-nav">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-          </svg>
-          <span>Star on GitHub</span>
-        </a>
-        <button class="mobile-toggle" id="btn-mobile-toggle" aria-label="Toggle navigation">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </div>
-  </header>
+    const allUniqueGenres = Array.from(new Set(soundSystems.flatMap(s => s.genres))).sort();
 
-  <main>
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-      <div class="container">
-        <div class="badge-container">
-          <span class="badge" id="badge-version">
-            <span class="badge-pulse"></span>
-            Testoz v1.0 Published to GitHub Pages
-          </span>
-        </div>
+    // 40 Toilets
+    const toilets = [
+      [51.52581023362718, -0.21556246735318205], [51.52521614814033, -0.21312702163357436],
+      [51.523160152021205, -0.21213996874280824], [51.5220186335487, -0.21234381659803153],
+      [51.52237244054887, -0.21236527423095025], [51.52193185025316, -0.21359909034440788],
+      [51.52463540537901, -0.21053064326127924], [51.524428472266955, -0.20793426500513357],
+      [51.523587379600585, -0.20752656916576112], [51.51944176733717, -0.20489800426815533],
+      [51.52034301947956, -0.20302045800854585], [51.51898779654075, -0.20111072524162882],
+      [51.51924816269799, -0.2000163839931707], [51.51874745719564, -0.204661969864101],
+      [51.51801307921607, -0.2010356233741124], [51.51855384961313, -0.19792426091219106],
+      [51.51815327957567, -0.1941691683613215], [51.51924148664118, -0.19445884692708984],
+      [51.51566966665217, -0.1965724276026588], [51.51562839755047, -0.19741259512637685],
+      [51.51564296040125, -0.19825685481842276], [51.515162245188634, -0.19734490378588102],
+      [51.51524570303479, -0.20123410683112386], [51.51463812629738, -0.20205486276746742],
+      [51.51522066570173, -0.2041282103377943], [51.51497696817391, -0.20489800431621205],
+      [51.51287377095575, -0.20497847059348256], [51.51382189092044, -0.20140040382162547],
+      [51.5144328169419, -0.1957570360404987], [51.51515102051024, -0.19297622146336577],
+      [51.511405273192075, -0.19677422936689432], [51.50991957509662, -0.1977022737351203],
+      [51.51099796301553, -0.20032547414515176], [51.511538816692074, -0.20059905945726628],
+      [51.50983944617221, -0.20427905020246906], [51.51068079272844, -0.2054002135786794],
+      [51.507669234457005, -0.20578108726489217], [51.509238474799965, -0.2010872215088658],
+      [51.508877888189346, -0.20088337362925102], [51.51457014938634, -0.20827822381957228]
+    ];
 
-        <h1 class="hero-title" id="hero-heading">
-          Next-Gen Workflows for <span class="text-gradient">Modern Engineering</span>
-        </h1>
+    // 8 First Aid Posts
+    const firstAidPosts = [
+      [51.5152177867777, -0.2086215464924644], [51.5202583613748, -0.21186165498652],
+      [51.52521994501519, -0.20932696751005886], [51.524699279494506, -0.20680569110429753],
+      [51.52245634454205, -0.2020313589962297], [51.522282779438704, -0.20152710364654913],
+      [51.51891148095184, -0.19605539726429888], [51.512722329030396, -0.20311497138017148]
+    ];
 
-        <p class="hero-subtitle" id="hero-subheading">
-          Automate testing pipelines, gain real-time execution insights, and deliver resilient software faster than ever before.
-        </p>
+    // 5 Welfare Points
+    const welfarePoints = [
+      [51.51618088005789, -0.2012803405397163], [51.51738263165524, -0.19731067130511343],
+      [51.52296368472756, -0.20973466329484083], [51.52570055402474, -0.2089192717763818],
+      [51.5174760999788, -0.1969888061129847]
+    ];
 
-        <div class="hero-actions">
-          <a href="#cta" class="btn btn-primary" id="btn-hero-primary">
-            <span>Get Started Free</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-          <a href="#showcase" class="btn btn-secondary" id="btn-hero-secondary">
-            <span>Explore Demo</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </a>
-        </div>
+    // 19 Street Trading Food Zones
+    const streetTradingPoints = [
+      [51.51702210951086, -0.198405012454264], [51.5160473501509, -0.20070098330887212],
+      [51.515700170565616, -0.19960664191929264], [51.51605402667002, -0.20154856127946785],
+      [51.51423798124296, -0.1991131155578275], [51.51632776254423, -0.20081900044977574],
+      [51.516260997852186, -0.2016558496397731], [51.51667493736619, -0.20240686814623018],
+      [51.518247205578625, -0.1999606934906744], [51.51597390854232, -0.20475111876847826],
+      [51.515857069359356, -0.2060385790607819], [51.51859770385225, -0.20552359496433173],
+      [51.51888811466633, -0.2076532689625183], [51.51941218463827, -0.20861349976386143],
+      [51.52043694099562, -0.20852766909454945], [51.52162522895369, -0.20892463600465258],
+      [51.52522995776204, -0.2101477233285106], [51.525076428838126, -0.20874761026063038],
+      [51.524205309264886, -0.20661793626926744]
+    ];
 
-        <!-- Dashboard UI Visual Card -->
-        <div class="hero-preview" id="hero-preview">
-          <div class="glass-card mockup-window">
-            <div class="mockup-header">
-              <div class="mockup-dots">
-                <span class="dot red"></span>
-                <span class="dot yellow"></span>
-                <span class="dot green"></span>
-              </div>
-              <div class="mockup-title">testoz-pipeline.config.ts</div>
-              <div class="mockup-badge">LIVE MONITORING</div>
-            </div>
+    // Tube & Rail Stations
+    const tubeStations = [
+      { name: "Westbourne Park Station", lines: "Circle • Hammersmith & City", status: "⚠️ Exit Only from 11:00 (No Entry)", statusType: "warning", lat: 51.5208, lng: -0.2010 },
+      { name: "Ladbroke Grove Station", lines: "Circle • Hammersmith & City", status: "⛔ CLOSED ALL WEEKEND", statusType: "closed", lat: 51.5173, lng: -0.2106 },
+      { name: "Notting Hill Gate Station", lines: "Central • Circle • District", status: "ℹ️ Extremely Busy / Peak Restrictions", statusType: "busy", lat: 51.5091, lng: -0.1961 },
+      { name: "Holland Park Station", lines: "Central Line", status: "⚠️ Often closes early ~15:00", statusType: "warning", lat: 51.5076, lng: -0.2060 },
+      { name: "Royal Oak Station", lines: "Circle • Hammersmith & City", status: "⚠️ Exit Only 11:00-18:00", statusType: "warning", lat: 51.5190, lng: -0.1878 },
+      { name: "Latimer Road Station", lines: "Circle • Hammersmith & City", status: "ℹ️ Open (Closes ~23:30)", statusType: "busy", lat: 51.5134, lng: -0.2178 },
+      { name: "Bayswater Station", lines: "Circle • District", status: "ℹ️ Open (Recommended alternative)", statusType: "open", lat: 51.5123, lng: -0.1879 },
+      { name: "Queensway Station", lines: "Central Line", status: "ℹ️ Open (Recommended Central alternative)", statusType: "open", lat: 51.5107, lng: -0.1872 },
+      { name: "Kensal Rise Station", lines: "London Overground", status: "🚆 Open (Overground services)", statusType: "open", lat: 51.5305, lng: -0.2205 },
+      { name: "Kensal Green Station", lines: "Bakerloo • London Overground", status: "🚇 Open (North perimeter walking distance)", statusType: "open", lat: 51.5305, lng: -0.2248 },
+      { name: "Paddington Station", lines: "Elizabeth Line • Rail • Underground", status: "🚆 Major interchange hub to East", statusType: "open", lat: 51.5154, lng: -0.1755 }
+    ];
 
-            <div class="mockup-body">
-              <div class="code-panel">
-                <div class="code-line"><span class="c-purple">import</span> { <span class="c-blue">defineTestoz</span>, <span class="c-blue">pipeline</span> } <span class="c-purple">from</span> <span class="c-green">'@testoz/core'</span>;</div>
-                <div class="code-line">&nbsp;</div>
-                <div class="code-line"><span class="c-purple">export default</span> <span class="c-yellow">defineTestoz</span>({</div>
-                <div class="code-line">&nbsp;&nbsp;concurrency: <span class="c-orange">64</span>,</div>
-                <div class="code-line">&nbsp;&nbsp;telemetry: { realtime: <span class="c-purple">true</span>, aiDiagnostics: <span class="c-purple">true</span> },</div>
-                <div class="code-line">&nbsp;&nbsp;steps: [</div>
-                <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">pipeline</span>.<span class="c-blue">audit</span>({ strictMode: <span class="c-purple">true</span> }),</div>
-                <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">pipeline</span>.<span class="c-blue">execute</span>({ coverageThreshold: <span class="c-orange">98.5</span> })</div>
-                <div class="code-line">&nbsp;&nbsp;]</div>
-                <div class="code-line">});</div>
-              </div>
+    // Full Parade Circuit Geometry
+    const exactParadeRoads = [
+      [51.51598123570026, -0.2090721607145155],
+      [51.5177571540958, -0.21027379032066557],
+      [51.52632865867373, -0.21520905495627005],
+      [51.52612840828571, -0.2099948406928779],
+      [51.52556770251158, -0.20692639366288756],
+      [51.52523394579644, -0.2061753751590438],
+      [51.52423266097259, -0.20544581432673842],
+      [51.52380543941318, -0.20636849420288933],
+      [51.52316459955862, -0.20673327461904203],
+      [51.52247034612022, -0.20483427054561115],
+      [51.52224337638216, -0.20385794649061423],
+      [51.52241694157776, -0.20286016476407895],
+      [51.52217662035287, -0.20145468718016799],
+      [51.52058779812705, -0.2003925323661338],
+      [51.51861838278742, -0.19843988425613998],
+      [51.519052329075656, -0.19640140545999255],
+      [51.5150264839289, -0.1950281144289778],
+      [51.51441111749441, -0.20026314729411798],
+      [51.5125616215156, -0.20650732971179062],
+      [51.51598123570026, -0.2090721607145155]
+    ];
 
-              <div class="status-panel">
-                <div class="status-card">
-                  <div class="status-header">
-                    <span class="status-label">Overall Health</span>
-                    <span class="status-value green-text">99.98%</span>
-                  </div>
-                  <div class="progress-bar"><div class="progress-fill fill-green"></div></div>
-                </div>
+    // Explicit Arterial Arrow Points (Strict Clockwise Direction)
+    const arterialArrows = [
+      { lat: 51.5175, lng: -0.2100, bearing: 338 }, // 1. Ladbroke Grove South -> North (338°)
+      { lat: 51.5220, lng: -0.2127, bearing: 340 }, // 2. Ladbroke Grove North -> North (340°)
+      { lat: 51.5262, lng: -0.2125, bearing: 94 },  // 3. Kensal Road West -> East (94°)
+      { lat: 51.5258, lng: -0.2085, bearing: 105 }, // 4. Kensal Road East -> East (105°)
+      { lat: 51.5210, lng: -0.2007, bearing: 157 }, // 5. Great Western Road -> South (157°)
+      { lat: 51.5170, lng: -0.1957, bearing: 168 }, // 6. Chepstow Road -> South (168°)
+      { lat: 51.5147, lng: -0.1976, bearing: 259 }, // 7. Westbourne Grove East -> West (259°)
+      { lat: 51.5135, lng: -0.2034, bearing: 245 }  // 8. Westbourne Grove West -> West (245°)
+    ];
 
-                <div class="status-card">
-                  <div class="status-header">
-                    <span class="status-label">Test Speedup</span>
-                    <span class="status-value cyan-text">12.4x</span>
-                  </div>
-                  <div class="progress-bar"><div class="progress-fill fill-cyan"></div></div>
-                </div>
+    // Boundary
+    const carnivalBoundaryCoords = [
+      [51.5273, -0.2175], [51.5268, -0.2085], [51.5240, -0.2010],
+      [51.5215, -0.1975], [51.5175, -0.1915], [51.5130, -0.1920],
+      [51.5100, -0.1945], [51.5085, -0.1985], [51.5090, -0.2045],
+      [51.5115, -0.2080], [51.5140, -0.2120], [51.5150, -0.2155],
+      [51.5200, -0.2175], [51.5255, -0.2185], [51.5273, -0.2175]
+    ];
 
-                <div class="console-ticker">
-                  <div class="ticker-item"><span class="tick-icon">✓</span> [SUCCESS] 4,820 tests executed in 412ms</div>
-                  <div class="ticker-item"><span class="tick-icon">✓</span> [AI DIAGNOSTICS] Zero flaky test regressions detected</div>
-                  <div class="ticker-item"><span class="tick-icon">⚡</span> [EDGE DISPATCH] Shared 12 worker threads</div>
-                </div>
-              </div>
-            </div>
+    // Walking Navigation HTML
+    function createNavHTML(lat, lng, title) {
+      const gmapsURL = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+      const appleURL = `https://maps.apple.com/?daddr=${lat},${lng}&dirflg=w`;
+      const citymapperURL = `https://citymapper.com/directions?endcoord=${lat},${lng}&endname=${encodeURIComponent(title)}`;
+
+      return `
+        <div class="nav-box">
+          <div class="nav-label">🚶 Turn-by-Turn Walking Directions</div>
+          <div class="nav-buttons">
+            <a href="${gmapsURL}" target="_blank" rel="noopener" class="nav-btn nav-btn-gmaps">🗺️ Google Maps</a>
+            <a href="${appleURL}" target="_blank" rel="noopener" class="nav-btn nav-btn-apple">🍎 Apple Maps</a>
+            <a href="${citymapperURL}" target="_blank" rel="noopener" class="nav-btn nav-btn-citymapper">🟢 Citymapper</a>
           </div>
         </div>
-      </div>
-    </section>
+      `;
+    }
 
-    <!-- Metrics Section -->
-    <section class="metrics-section" id="metrics">
-      <div class="container">
-        <div class="metrics-grid">
-          <div class="metric-card" id="metric-1">
-            <h3 class="metric-number" data-target="99.99">0%</h3>
-            <p class="metric-label">Execution Reliability</p>
+    // Initialize Map with 100% Free OpenStreetMap Tiles
+    const map = L.map('map', { zoomControl: true }).setView([51.5195, -0.2050], 15);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Layers
+    const boundaryLayer = L.layerGroup().addTo(map);
+    const paradeLayer = L.layerGroup().addTo(map);
+    const stationsLayer = L.layerGroup().addTo(map);
+    const toiletsLayer = L.layerGroup().addTo(map);
+    const firstAidLayer = L.layerGroup().addTo(map);
+    const welfareLayer = L.layerGroup().addTo(map);
+    const tradingLayer = L.layerGroup().addTo(map);
+    const systemsLayer = L.layerGroup().addTo(map);
+
+    // Tube Stations
+    tubeStations.forEach(st => {
+      const isClosed = st.statusType === 'closed';
+      const roundelClass = isClosed ? 'tube-roundel-pin tube-roundel-closed' : 'tube-roundel-pin';
+      
+      const icon = L.divIcon({
+        className: 'custom-station-icon',
+        html: `<div class="${roundelClass}"><div class="tube-roundel-bar"></div></div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14]
+      });
+
+      const popupContent = `
+        <div style="min-width: 200px;">
+          <h3 style="font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 2px;">🚇 ${st.name}</h3>
+          <p style="font-size: 0.75rem; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">${st.lines}</p>
+          <div style="font-size: 0.75rem; padding: 4px 6px; border-radius: 4px; background: ${isClosed ? '#7f1d1d' : '#1e293b'}; color: ${isClosed ? '#fecaca' : '#cbd5e1'}; border: 1px solid ${isClosed ? '#ef4444' : '#334155'};">
+            ${st.status}
           </div>
-          <div class="metric-card" id="metric-2">
-            <h3 class="metric-number" data-target="10">0x</h3>
-            <p class="metric-label">Average Pipeline Speedup</p>
-          </div>
-          <div class="metric-card" id="metric-3">
-            <h3 class="metric-number" data-target="50">0M+</h3>
-            <p class="metric-label">Automated Tests Executed</p>
-          </div>
-          <div class="metric-card" id="metric-4">
-            <h3 class="metric-number" data-target="150">0k+</h3>
-            <p class="metric-label">Happy Engineers</p>
-          </div>
+          ${createNavHTML(st.lat, st.lng, st.name)}
         </div>
-      </div>
-    </section>
+      `;
 
-    <!-- Features Section -->
-    <section class="features-section" id="features">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag">ENGINEERING POWER</span>
-          <h2 class="section-title">Architected for Speed & Reliability</h2>
-          <p class="section-subtitle">Everything you need to ship quality code at scale without friction.</p>
-        </div>
+      L.marker([st.lat, st.lng], { icon }).bindPopup(popupContent).addTo(stationsLayer);
+    });
 
-        <div class="features-grid">
-          <div class="feature-card" id="feature-1">
-            <div class="feature-icon glow-purple">⚡</div>
-            <h3 class="feature-title">Ultra-Fast Parallel Engine</h3>
-            <p class="feature-desc">Execute thousands of test cases concurrently using micro-task scheduling and smart cache reuse.</p>
+    // Thick Parade Route Polyline
+    L.polyline(exactParadeRoads, {
+      color: '#580c0c',
+      weight: 14,
+      opacity: 0.7,
+      lineJoin: 'round',
+      lineCap: 'round'
+    }).addTo(paradeLayer);
+
+    L.polyline(exactParadeRoads, {
+      color: '#dc2626',
+      weight: 9,
+      opacity: 0.95,
+      lineJoin: 'round',
+      lineCap: 'round'
+    }).bindPopup("<strong>Official Parade Route</strong><br>Directional flow circuit (Clockwise)").addTo(paradeLayer);
+
+    // Render Accurate Clockwise Double Chevron Arrows (>>)
+    arterialArrows.forEach(a => {
+      const doubleArrowIcon = L.divIcon({
+        className: 'route-arrow-marker',
+        html: `
+          <div style="transform: rotate(${a.bearing}deg); display: flex; align-items: center; justify-content: center; width: 22px; height: 22px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.9));">
+              <!-- Lead Chevron pointing UP (North) at 0 deg -->
+              <path d="M12 2 L3 11 L6 12 L12 6 L18 12 L21 11 Z" fill="#ffffff" />
+              <!-- Trail Chevron pointing UP (North) at 0 deg -->
+              <path d="M12 10 L3 19 L6 20 L12 14 L18 20 L21 19 Z" fill="#ffffff" />
+            </svg>
           </div>
+        `,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11]
+      });
 
-          <div class="feature-card" id="feature-2">
-            <div class="feature-icon glow-cyan">🛡️</div>
-            <h3 class="feature-title">Zero-Config Security Auditing</h3>
-            <p class="feature-desc">Automated dependency scanning, secret detection, and vulnerability reporting built right in.</p>
+      L.marker([a.lat, a.lng], { icon: doubleArrowIcon, interactive: false }).addTo(paradeLayer);
+    });
+
+    // Boundary
+    L.polygon(carnivalBoundaryCoords, {
+      color: '#eab308',
+      weight: 2.5,
+      dashArray: '6, 6',
+      fillColor: '#f59e0b',
+      fillOpacity: 0.08
+    }).bindPopup("<strong>Official Carnival Zone / Perimeter Boundary</strong>").addTo(boundaryLayer);
+
+    // Toilets
+    toilets.forEach((t, i) => {
+      const icon = L.divIcon({
+        className: 'custom-facility-icon',
+        html: `<div class="facility-pin pin-wc">WC</div>`,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11]
+      });
+      L.marker([t[0], t[1]], { icon })
+        .bindPopup(`
+          <div>
+            <strong style="color:#38bdf8;">🚻 Public Toilet Station #${i + 1}</strong>
+            ${createNavHTML(t[0], t[1], `Toilet Station #${i + 1}`)}
           </div>
+        `)
+        .addTo(toiletsLayer);
+    });
 
-          <div class="feature-card" id="feature-3">
-            <div class="feature-icon glow-green">📊</div>
-            <h3 class="feature-title">Real-Time Telemetry</h3>
-            <p class="feature-desc">Stream instant build metrics, memory usage, and performance trends directly to your dashboard.</p>
+    // First Aid
+    firstAidPosts.forEach((fa, i) => {
+      const icon = L.divIcon({
+        className: 'custom-facility-icon',
+        html: `<div class="facility-pin pin-firstaid">+</div>`,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11]
+      });
+      L.marker([fa[0], fa[1]], { icon })
+        .bindPopup(`
+          <div>
+            <strong style="color:#4ade80;">🏥 First Aid Post #${i + 1}</strong>
+            <div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">Medical Support Team</div>
+            ${createNavHTML(fa[0], fa[1], `First Aid Post #${i + 1}`)}
           </div>
+        `)
+        .addTo(firstAidLayer);
+    });
 
-          <div class="feature-card" id="feature-4">
-            <div class="feature-icon glow-pink">🤖</div>
-            <h3 class="feature-title">AI Failure Root-Cause Analysis</h3>
-            <p class="feature-desc">Instantaneous stacktrace grouping and AI suggestions pinpoint exact source lines causing errors.</p>
+    // Welfare
+    welfarePoints.forEach((w, i) => {
+      const icon = L.divIcon({
+        className: 'custom-facility-icon',
+        html: `<div class="facility-pin pin-welfare">♥</div>`,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11]
+      });
+      L.marker([w[0], w[1]], { icon })
+        .bindPopup(`
+          <div>
+            <strong style="color:#f472b6;">💖 Welfare Point #${i + 1}</strong>
+            <div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">Lost children & welfare support</div>
+            ${createNavHTML(w[0], w[1], `Welfare Point #${i + 1}`)}
           </div>
+        `)
+        .addTo(welfareLayer);
+    });
 
-          <div class="feature-card" id="feature-5">
-            <div class="feature-icon glow-yellow">🔄</div>
-            <h3 class="feature-title">Native GitHub Actions Support</h3>
-            <p class="feature-desc">Plug seamlessly into your existing workflows with minimal YAML configuration needed.</p>
+    // Street Trading (Option 1: Universal Fork & Knife Pin)
+    streetTradingPoints.forEach((st, i) => {
+      const icon = L.divIcon({
+        className: 'custom-facility-icon',
+        html: `
+          <div class="facility-pin pin-trading" title="Street Trading #${i + 1}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2"></path>
+              <path d="M15 11v11"></path>
+              <path d="M6 2v20"></path>
+              <path d="M6 2a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3z"></path>
+            </svg>
           </div>
-
-          <div class="feature-card" id="feature-6">
-            <div class="feature-icon glow-blue">🌐</div>
-            <h3 class="feature-title">Edge Multi-Region Dispatch</h3>
-            <p class="feature-desc">Distribute workload across global edge nodes for sub-100ms response times anywhere in the world.</p>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      });
+      L.marker([st[0], st[1]], { icon })
+        .bindPopup(`
+          <div>
+            <strong style="color:#fb923c;">🍴 Food & Street Trading Zone #${i + 1}</strong>
+            <div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">Licensed food stall & refreshments</div>
+            ${createNavHTML(st[0], st[1], `Food Stalls #${i + 1}`)}
           </div>
-        </div>
-      </div>
-    </section>
+        `)
+        .addTo(tradingLayer);
+    });
 
-    <!-- Interactive Showcase Section -->
-    <section class="showcase-section" id="showcase">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag">LIVE INTERACTIVE INTERFACE</span>
-          <h2 class="section-title">Experience the Testoz Engine</h2>
-          <p class="section-subtitle">Switch tabs to see how Testoz transforms every stage of your developer workflow.</p>
-        </div>
+    // Sound Systems Setup
+    let selectedGenres = new Set();
+    let searchQuery = '';
 
-        <div class="showcase-wrapper">
-          <div class="tab-buttons" id="showcase-tabs">
-            <button class="tab-btn active" data-tab="telemetry" id="tab-telemetry">
-              <span>📊 Real-Time Telemetry</span>
-            </button>
-            <button class="tab-btn" data-tab="ai" id="tab-ai">
-              <span>🤖 AI Root-Cause</span>
-            </button>
-            <button class="tab-btn" data-tab="cicd" id="tab-cicd">
-              <span>🔄 CI/CD Pipelines</span>
-            </button>
+    const genreContainer = document.getElementById('genreContainer');
+    allUniqueGenres.forEach(genre => {
+      const chip = document.createElement('div');
+      chip.className = 'genre-chip';
+      chip.textContent = genre;
+      chip.dataset.genre = genre;
+      chip.addEventListener('click', () => {
+        if (selectedGenres.has(genre)) {
+          selectedGenres.delete(genre);
+          chip.classList.remove('active');
+        } else {
+          selectedGenres.add(genre);
+          chip.classList.add('active');
+        }
+        applyFilters();
+      });
+      genreContainer.appendChild(chip);
+    });
+
+    function createSoundIcon() {
+      return L.divIcon({
+        className: 'custom-sys-icon',
+        html: `<div class="system-pin">🎵</div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14]
+      });
+    }
+
+    function applyFilters() {
+      systemsLayer.clearLayers();
+      const listEl = document.getElementById('system-list');
+      listEl.innerHTML = '';
+
+      const filtered = soundSystems.filter(s => {
+        const matchesGenre = selectedGenres.size === 0 || s.genres.some(g => selectedGenres.has(g));
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = !query || 
+          s.name.toLowerCase().includes(query) ||
+          s.genres.some(g => g.toLowerCase().includes(query));
+
+        return matchesGenre && matchesSearch;
+      });
+
+      document.getElementById('matchCounter').textContent = `Showing ${filtered.length} of 37 Systems`;
+
+      filtered.forEach(s => {
+        const marker = L.marker([s.lat, s.lng], { icon: createSoundIcon() });
+        const badgeHTML = s.genres.map(g => `<span class="popup-badge">${g}</span>`).join('');
+        
+        const popupContent = `
+          <div>
+            <div class="popup-title">${s.name}</div>
+            <div class="popup-badge-list">${badgeHTML}</div>
+            ${createNavHTML(s.lat, s.lng, s.name)}
           </div>
+        `;
+        marker.bindPopup(popupContent);
+        marker.addTo(systemsLayer);
 
-          <div class="tab-contents">
-            <!-- Tab 1 content -->
-            <div class="tab-content active" id="content-telemetry">
-              <div class="tab-grid">
-                <div class="tab-info">
-                  <h3>Instant Visibility Into Every Build</h3>
-                  <p>Never wait in the dark. Testoz streams memory, CPU utilization, and execution trace graphs live as your test suite runs.</p>
-                  <ul class="tab-checklist">
-                    <li><span class="check">✓</span> Live streaming log terminal</li>
-                    <li><span class="check">✓</span> Automated flaky test detection</li>
-                    <li><span class="check">✓</span> Sub-millisecond step profiling</li>
-                  </ul>
-                </div>
-                <div class="tab-preview glass-card">
-                  <div class="graph-box">
-                    <div class="graph-bar-group">
-                      <div class="bar" style="--height: 40%"></div>
-                      <div class="bar" style="--height: 65%"></div>
-                      <div class="bar" style="--height: 85%"></div>
-                      <div class="bar" style="--height: 50%"></div>
-                      <div class="bar active" style="--height: 95%"></div>
-                      <div class="bar" style="--height: 70%"></div>
-                    </div>
-                    <div class="graph-legend">
-                      <span class="legend-dot cyan"></span> Throughput: 4,200 ops/sec
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        const item = document.createElement('div');
+        item.className = 'list-card';
+        item.innerHTML = `
+          <div class="card-title">${s.name}</div>
+          <div class="card-genres">${s.genres.join(' • ')}</div>
+        `;
+        item.addEventListener('click', () => {
+          map.flyTo([s.lat, s.lng], 17, { animate: true, duration: 0.6 });
+          marker.openPopup();
+        });
+        listEl.appendChild(item);
+      });
+    }
 
-            <!-- Tab 2 content -->
-            <div class="tab-content" id="content-ai">
-              <div class="tab-grid">
-                <div class="tab-info">
-                  <h3>AI Diagnostic Insights</h3>
-                  <p>When a test fails, Testoz analyzes the diff, recent commits, and environment variables to suggest an immediate fix.</p>
-                  <ul class="tab-checklist">
-                    <li><span class="check">✓</span> Automated stacktrace deduplication</li>
-                    <li><span class="check">✓</span> One-click automated patch suggestions</li>
-                    <li><span class="check">✓</span> Contextual regression tracking</li>
-                  </ul>
-                </div>
-                <div class="tab-preview glass-card">
-                  <div class="ai-box">
-                    <div class="ai-header">
-                      <span class="ai-spark">✨</span> AI Root-Cause Summary
-                    </div>
-                    <div class="ai-suggestion">
-                      "Assertion failure on line 42 in <code>auth.spec.ts</code> caused by missing authorization token in header. Recommended fix: update test context mock."
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    // Filter Listeners
+    document.getElementById('clearGenresBtn').addEventListener('click', () => {
+      selectedGenres.clear();
+      document.querySelectorAll('.genre-chip').forEach(c => c.classList.remove('active'));
+      applyFilters();
+    });
 
-            <!-- Tab 3 content -->
-            <div class="tab-content" id="content-cicd">
-              <div class="tab-grid">
-                <div class="tab-info">
-                  <h3>Seamless GitHub & CI/CD Integration</h3>
-                  <p>Drop a single YAML step into your GitHub Actions setup to enable distributed caching and instant status checks.</p>
-                  <ul class="tab-checklist">
-                    <li><span class="check">✓</span> Zero setup overhead</li>
-                    <li><span class="check">✓</span> Automatic pull request status comments</li>
-                    <li><span class="check">✓</span> Smart delta execution (only test changed code)</li>
-                  </ul>
-                </div>
-                <div class="tab-preview glass-card">
-                  <pre class="yaml-code"><code><span class="c-purple">name</span>: Testoz Workflow
-<span class="c-purple">on</span>: [push, pull_request]
-<span class="c-purple">jobs</span>:
-  <span class="c-blue">test</span>:
-    <span class="c-purple">runs-on</span>: ubuntu-latest
-    <span class="c-purple">steps</span>:
-      - <span class="c-purple">uses</span>: actions/checkout@v4
-      - <span class="c-purple">uses</span>: VocalPalsy/testoz-action@v1
-        <span class="c-purple">with</span>:
-          <span class="c-blue">api-token</span>: <span class="c-green">${{ secrets.TESTOZ_TOKEN }}</span></code></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    document.getElementById('selectAllGenresBtn').addEventListener('click', () => {
+      allUniqueGenres.forEach(g => selectedGenres.add(g));
+      document.querySelectorAll('.genre-chip').forEach(c => c.classList.add('active'));
+      applyFilters();
+    });
 
-    <!-- Call to Action Section -->
-    <section class="cta-section" id="cta">
-      <div class="container">
-        <div class="cta-box glass-card">
-          <div class="cta-content">
-            <h2 class="cta-title">Ready to Transform Your Developer Workflow?</h2>
-            <p class="cta-subtitle">Get started with Testoz today on GitHub Pages. Open-source, lightweight, and blazing fast.</p>
-            
-            <form class="cta-form" id="cta-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing to Testoz updates!');">
-              <input type="email" class="cta-input" placeholder="Enter your email for updates..." required id="input-email" />
-              <button type="submit" class="btn btn-primary" id="btn-subscribe">
-                <span>Start Free</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      applyFilters();
+    });
 
-  <!-- Footer -->
-  <footer class="footer" id="footer">
-    <div class="container footer-content">
-      <div class="footer-brand">
-        <a href="#" class="brand-logo">
-          <span class="logo-icon">⚡</span>
-          <span class="logo-text">Testoz</span>
-        </a>
-        <p class="footer-desc">Empowering developers with fast, intelligent workflow automation.</p>
-      </div>
+    // Layer Controls
+    document.querySelectorAll('.layer-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const layerType = e.target.dataset.layer;
+        const isActive = e.target.classList.toggle('active');
 
-      <div class="footer-links">
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <a href="#features">Features</a>
-          <a href="#showcase">Showcase</a>
-          <a href="#metrics">Metrics</a>
-        </div>
-        <div class="footer-col">
-          <h4>Repository</h4>
-          <a href="https://github.com/VocalPalsy/testoz" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
-          <a href="https://vocalpalsy.github.io/testoz/">GitHub Pages Site</a>
-        </div>
-      </div>
-    </div>
+        if (layerType === 'stations') isActive ? map.addLayer(stationsLayer) : map.removeLayer(stationsLayer);
+        if (layerType === 'boundary') isActive ? map.addLayer(boundaryLayer) : map.removeLayer(boundaryLayer);
+        if (layerType === 'parade') isActive ? map.addLayer(paradeLayer) : map.removeLayer(paradeLayer);
+        if (layerType === 'toilets') isActive ? map.addLayer(toiletsLayer) : map.removeLayer(toiletsLayer);
+        if (layerType === 'firstaid') isActive ? map.addLayer(firstAidLayer) : map.removeLayer(firstAidLayer);
+        if (layerType === 'welfare') isActive ? map.addLayer(welfareLayer) : map.removeLayer(welfareLayer);
+        if (layerType === 'trading') isActive ? map.addLayer(tradingLayer) : map.removeLayer(tradingLayer);
+        if (layerType === 'systems') isActive ? map.addLayer(systemsLayer) : map.removeLayer(systemsLayer);
+      });
+    });
 
-    <div class="footer-bottom">
-      <div class="container bottom-flex">
-        <p>&copy; 2026 Testoz Project. Built with HTML, CSS & JavaScript.</p>
-        <a href="#hero" class="back-to-top" id="btn-back-to-top">↑ Back to top</a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- JavaScript Script -->
-  <script src="app.js"></script>
+    applyFilters();
+  </script>
 </body>
 </html>
