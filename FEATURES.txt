@@ -1,0 +1,102 @@
+===============================================================================
+NOTTING HILL CARNIVAL 2026 - INTERACTIVE MAP & NAVIGATOR
+DOCUMENTATION & FEATURE SPECIFICATION
+===============================================================================
+
+Live Site URL: https://vocalpalsy.github.io/testoz/
+Repository:    https://github.com/VocalPalsy/testoz
+
+-------------------------------------------------------------------------------
+1. OVERVIEW
+-------------------------------------------------------------------------------
+The Notting Hill Carnival 2026 Interactive Map & Navigator is a lightweight,
+high-performance web application designed for carnival attendees, visitors, 
+and engineering teams. It provides real-time geographic navigation across 
+37 sound systems, 40 toilet stations, 11 tube stations, first aid posts, 
+food zones, and official parade routes.
+
+-------------------------------------------------------------------------------
+2. TFL TRAVEL ALERTS TICKER FEATURE
+-------------------------------------------------------------------------------
+- Global Header Placement: Positioned at the top of the app viewport across both
+  desktop and mobile views.
+- Continuous Marquee: Uses a dual-track CSS keyframe animation for a seamless 
+  infinite loop with zero blank gaps or pauses.
+- Interactive Station Jump: Each alert inside the ticker is linked to its
+  respective tube station marker. Clicking any alert text (e.g., Westbourne 
+  Park, Holland Park, Ladbroke Grove) smoothly flies the map directly to that 
+  station and opens its status popup.
+- Alerts Included:
+  * ⛔ Ladbroke Grove Station: CLOSED ALL WEEKEND (Circle / Hammersmith & City)
+  * ⚠️ Westbourne Park Station: EXIT ONLY from 11:00 AM (No Entry)
+  * ⚠️ Holland Park Station: Often closes early (~15:00)
+  * ℹ️ Recommended Alternatives: Bayswater & Queensway Stations
+- Dismiss Toggle: Includes a clean close button (✕) to hide the banner.
+
+-------------------------------------------------------------------------------
+3. SOUND SYSTEMS & GENRE FILTERING
+-------------------------------------------------------------------------------
+- 37 Sound Systems: Includes exact GPS coordinates, full genre tags, and stage
+  details for all official carnival sound systems (e.g., Mastermind, Aba Shanti,
+  Channel One, Rampage, Saxon Studio, Gaz's Rockin' Blues, etc.).
+- Quick Preset Filter Pills:
+  * [All]: Displays all 37 systems.
+  * [⭐ Favorites]: Shows only starred sound systems.
+  * [🇯🇲 Reggae & Dub]: Filters for Reggae, Dub, Lovers Rock, and Steppers.
+  * [💃 Soca & Calypso]: Filters for Soca, Calypso, and Caribbean Party Music.
+  * [🎧 House & Techno]: Filters for House, Tech House, Techno, and Electronic.
+  * [🎤 Hip-Hop & R&B]: Filters for Hip-Hop, R&B, Garage, Urban, and Soul.
+- Real-Time Search Box: Instant search by system name or genre with a clear 
+  button (✕).
+- Individual Genre Chips: Select single or multiple genre tags simultaneously.
+
+-------------------------------------------------------------------------------
+4. FAVORITES SYSTEM (⭐)
+-------------------------------------------------------------------------------
+- Star buttons (⭐) embedded on each sidebar list card and inside map popups.
+- Persistent Storage: Saved in browser `localStorage` under key `nhc26_favs`.
+- Filter View: Instant access to all favorited stages via the "⭐ Favorites" 
+  preset button.
+
+-------------------------------------------------------------------------------
+5. REAL-TIME GPS GEOLOCATION (📍)
+-------------------------------------------------------------------------------
+- Floating Map Control: "📍 Find My Location" button on top-right map controls.
+- Uses Leaflet's `map.locate()` with high-accuracy GPS positioning.
+- Displays a pulsating blue user marker and accuracy radius circle.
+
+-------------------------------------------------------------------------------
+6. BASEMAP & DARK MODE SWITCHER
+-------------------------------------------------------------------------------
+- Dark Theme Default: CartoDB Dark Matter tile layer matching carnival night vibe.
+- Light Theme Toggle: Switch between Dark Map and standard OpenStreetMap tiles.
+
+-------------------------------------------------------------------------------
+7. FACILITY & ROUTE LAYERS
+-------------------------------------------------------------------------------
+- 40 Public Toilets (WC): Blue pin markers with turn-by-turn directions.
+- 8 First Aid Posts: Green cross markers with medical team info.
+- 5 Welfare Points: Pink heart markers for lost children & welfare support.
+- 19 Food & Trading Zones: Orange fork-and-knife pins for licensed food stalls.
+- 11 Tube & Rail Stations: Custom UK Underground roundel pins with real-time status.
+- Official Parade Route: Red polyline circuit with directional chevrons (>>).
+- Perimeter Boundary: Dashed gold polygon representing official carnival zone.
+
+-------------------------------------------------------------------------------
+8. WALKING NAVIGATION SHORTCUTS
+-------------------------------------------------------------------------------
+Every map popup includes 1-click turn-by-turn walking directions links:
+- Google Maps (destination coordinates)
+- Apple Maps (walking mode parameter)
+- Citymapper (destination name & coordinates)
+
+-------------------------------------------------------------------------------
+9. MOBILE RESPONSIVE DRAWER VIEW
+-------------------------------------------------------------------------------
+- Tab switcher bar for mobile devices (<=768px):
+  * [🗺️ Map View]: Full screen map navigation.
+  * [📋 Filters & Systems (37)]: Collapsible drawer list & filters.
+- Selecting any sound system card automatically switches to Map View and flies
+  to the stage location.
+
+===============================================================================
