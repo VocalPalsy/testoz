@@ -44,6 +44,7 @@
       background: var(--bg); 
       color: var(--text); 
       display: flex; 
+      flex-direction: column;
       height: 100vh; 
       overflow: hidden; 
     }
@@ -54,7 +55,108 @@
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-    /* Layout Containers */
+    /* Travel Alert Ticker Banner - Top Global Positioning */
+    .travel-ticker-banner {
+      background: linear-gradient(90deg, #450a0a 0%, #1e1b4b 100%);
+      border-bottom: 1px solid rgba(239, 68, 68, 0.35);
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.76rem;
+      color: #fecaca;
+      z-index: 2000;
+      flex-shrink: 0;
+      height: 36px;
+    }
+
+    .ticker-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .ticker-badge {
+      background: #ef4444;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+    }
+
+    .ticker-text-wrapper {
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1;
+      display: flex;
+    }
+
+    .ticker-text-track {
+      display: flex;
+      white-space: nowrap;
+      animation: marquee-continuous 32s linear infinite;
+    }
+
+    .ticker-text-track:hover {
+      animation-play-state: paused;
+    }
+
+    .ticker-text-group {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .ticker-item {
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .ticker-item:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    .ticker-sep {
+      color: rgba(254, 202, 202, 0.5);
+    }
+
+    .ticker-close-btn {
+      background: none;
+      border: none;
+      color: #fecaca;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 2px 4px;
+      opacity: 0.8;
+      transition: opacity 0.15s;
+    }
+    .ticker-close-btn:hover { opacity: 1; }
+
+    @keyframes marquee-continuous {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Main App Layout Container */
+    #app-container {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Sidebar Styling */
     #sidebar {
       width: 440px;
       height: 100%;
@@ -102,75 +204,6 @@
       font-weight: 500;
     }
 
-    /* Travel Alert Ticker Banner */
-    .travel-ticker-banner {
-      background: linear-gradient(90deg, #450a0a 0%, #1e1b4b 100%);
-      border-bottom: 1px solid rgba(239, 68, 68, 0.35);
-      padding: 7px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 0.76rem;
-      color: #fecaca;
-      position: relative;
-    }
-
-    .ticker-content {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
-      overflow: hidden;
-      cursor: pointer;
-    }
-
-    .ticker-badge {
-      background: #ef4444;
-      color: #ffffff;
-      font-weight: 800;
-      font-size: 0.65rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      flex-shrink: 0;
-      letter-spacing: 0.05em;
-      box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
-    }
-
-    .ticker-text-wrapper {
-      overflow: hidden;
-      white-space: nowrap;
-      flex: 1;
-    }
-
-    .ticker-text {
-      display: inline-block;
-      white-space: nowrap;
-      animation: marquee 24s linear infinite;
-    }
-
-    .ticker-text:hover {
-      animation-play-state: paused;
-    }
-
-    .ticker-close-btn {
-      background: none;
-      border: none;
-      color: #fecaca;
-      font-size: 0.85rem;
-      cursor: pointer;
-      padding: 2px 4px;
-      opacity: 0.8;
-      transition: opacity 0.15s;
-    }
-    .ticker-close-btn:hover { opacity: 1; }
-
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
     /* Mobile Nav Bar */
     .mobile-tab-nav {
       display: none;
@@ -178,6 +211,7 @@
       border-bottom: 1px solid var(--border);
       padding: 6px;
       gap: 6px;
+      flex-shrink: 0;
     }
     .mobile-tab-btn {
       flex: 1;
@@ -484,17 +518,21 @@
 
     /* Mobile Responsive Rules */
     @media (max-width: 768px) {
-      body { flex-direction: column; }
       .mobile-tab-nav { display: flex; }
+      #app-container {
+        flex-direction: column;
+        height: calc(100vh - 46px - 36px);
+      }
       #sidebar { 
         width: 100%; 
-        height: calc(100vh - 46px); 
+        height: 100%; 
         order: 2; 
         display: none; 
       }
       #sidebar.active-mobile { display: flex; }
       #map { 
-        height: calc(100vh - 46px); 
+        width: 100%;
+        height: 100%; 
         order: 1; 
       }
       #map.hidden-mobile { display: none; }
@@ -503,85 +541,108 @@
 </head>
 <body>
 
+  <!-- Top Travel Alert Ticker Banner -->
+  <div class="travel-ticker-banner" id="travelTicker">
+    <div class="ticker-content" id="tickerContent">
+      <span class="ticker-badge">TfL Alert</span>
+      <div class="ticker-text-wrapper">
+        <div class="ticker-text-track">
+          <div class="ticker-text-group">
+            <span class="ticker-item" data-station="Ladbroke Grove Station">⛔ <strong>Ladbroke Grove Station:</strong> CLOSED ALL WEEKEND</span>
+            <span class="ticker-sep">&nbsp;•&nbsp;</span>
+            <span class="ticker-item" data-station="Westbourne Park Station">⚠️ <strong>Westbourne Park:</strong> EXIT ONLY from 11:00 AM</span>
+            <span class="ticker-sep">&nbsp;•&nbsp;</span>
+            <span class="ticker-item" data-station="Holland Park Station">⚠️ <strong>Holland Park:</strong> Closes early ~15:00</span>
+            <span class="ticker-sep">&nbsp;•&nbsp;</span>
+            <span class="ticker-item" data-station="Bayswater Station">ℹ️ <strong>Recommended Alternatives:</strong> Bayswater</span>
+            <span class="ticker-sep">&nbsp;&amp;&nbsp;</span>
+            <span class="ticker-item" data-station="Queensway Station">Queensway Stations</span>
+            <span class="ticker-sep">&nbsp;•&nbsp;</span>
+          </div>
+          <div class="ticker-text-group">
+            <span class="ticker-item" data-station="Ladbroke Grove Station">⛔ <strong>Ladbroke Grove Station:</strong> CLOSED ALL WEEKEND</span>
+            <span class="ticker-sep">&nbsp;•&nbsp;</span>
+            <span class="ticker-item" data-station="Westbourne Park Station">⚠️ <strong>Westbourne Park:</strong> EXIT ONLY from 11:00 AM</span>
+            <span class="ticker-sep">&nbsp;•&nbsp;</span>
+            <span class="ticker-item" data-station="Holland Park Station">⚠️ <strong>Holland Park:</strong> Closes early ~15:00</span>
+            <span class="ticker-sep">&nbsp;•&nbsp;</span>
+            <span class="ticker-item" data-station="Bayswater Station">ℹ️ <strong>Recommended Alternatives:</strong> Bayswater</span>
+            <span class="ticker-sep">&nbsp;&amp;&nbsp;</span>
+            <span class="ticker-item" data-station="Queensway Station">Queensway Stations</span>
+            <span class="ticker-sep">&nbsp;•&nbsp;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="ticker-close-btn" id="tickerCloseBtn" title="Dismiss Banner">✕</button>
+  </div>
+
   <!-- Mobile View Switcher -->
   <div class="mobile-tab-nav">
     <button class="mobile-tab-btn active" id="btn-tab-map">🗺️ Map View</button>
     <button class="mobile-tab-btn" id="btn-tab-list">📋 Filters & Systems (37)</button>
   </div>
 
-  <div id="sidebar">
-    <div class="header">
-      <div class="header-info">
-        <h1><span class="logo-icon">🔊</span> NHC <span class="highlight">2026</span></h1>
-        <p>37 Sound Systems • 40 Toilets • Tube Stations • Routes</p>
-      </div>
-    </div>
-
-    <!-- Travel Alert Ticker Banner -->
-    <div class="travel-ticker-banner" id="travelTicker">
-      <div class="ticker-content" id="tickerContent" title="Click to view station on map">
-        <span class="ticker-badge">TfL Alert</span>
-        <div class="ticker-text-wrapper">
-          <span class="ticker-text">
-            ⛔ <strong>Ladbroke Grove Station:</strong> CLOSED ALL WEEKEND &nbsp;•&nbsp; 
-            ⚠️ <strong>Westbourne Park:</strong> EXIT ONLY from 11:00 AM &nbsp;•&nbsp; 
-            ⚠️ <strong>Holland Park:</strong> Closes early ~15:00 &nbsp;•&nbsp; 
-            ℹ️ <strong>Recommended Alternatives:</strong> Bayswater & Queensway Stations
-          </span>
-        </div>
-      </div>
-      <button class="ticker-close-btn" id="tickerCloseBtn" title="Dismiss Banner">✕</button>
-    </div>
-
-    <div class="controls-container">
-      <!-- Search Input -->
-      <div class="search-row">
-        <div class="search-wrapper">
-          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" id="searchInput" placeholder="Search sound system or genre..." />
-          <button class="search-clear" id="searchClearBtn">✕</button>
+  <!-- App Main Content Wrapper -->
+  <div id="app-container">
+    <div id="sidebar">
+      <div class="header">
+        <div class="header-info">
+          <h1><span class="logo-icon">🔊</span> NHC <span class="highlight">2026</span></h1>
+          <p>37 Sound Systems • 40 Toilets • Tube Stations • Routes</p>
         </div>
       </div>
 
-      <!-- Quick Genre Presets -->
-      <div class="preset-pills">
-        <button class="preset-pill active" data-preset="all">All</button>
-        <button class="preset-pill" data-preset="favs">⭐ Favorites</button>
-        <button class="preset-pill" data-preset="reggae">🇯🇲 Reggae & Dub</button>
-        <button class="preset-pill" data-preset="soca">💃 Soca & Calypso</button>
-        <button class="preset-pill" data-preset="house">🎧 House & Techno</button>
-        <button class="preset-pill" data-preset="hiphop">🎤 Hip-Hop & R&B</button>
-      </div>
+      <div class="controls-container">
+        <!-- Search Input -->
+        <div class="search-row">
+          <div class="search-wrapper">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchInput" placeholder="Search sound system or genre..." />
+            <button class="search-clear" id="searchClearBtn">✕</button>
+          </div>
+        </div>
 
-      <div class="action-row">
-        <span class="active-count" id="matchCounter">Showing 37 Systems</span>
-        <div style="display:flex; gap: 4px;">
-          <button class="btn-action" id="clearGenresBtn">Clear</button>
-          <button class="btn-action" id="selectAllGenresBtn">Select All</button>
+        <!-- Quick Genre Presets -->
+        <div class="preset-pills">
+          <button class="preset-pill active" data-preset="all">All</button>
+          <button class="preset-pill" data-preset="favs">⭐ Favorites</button>
+          <button class="preset-pill" data-preset="reggae">🇯🇲 Reggae & Dub</button>
+          <button class="preset-pill" data-preset="soca">💃 Soca & Calypso</button>
+          <button class="preset-pill" data-preset="house">🎧 House & Techno</button>
+          <button class="preset-pill" data-preset="hiphop">🎤 Hip-Hop & R&B</button>
+        </div>
+
+        <div class="action-row">
+          <span class="active-count" id="matchCounter">Showing 37 Systems</span>
+          <div style="display:flex; gap: 4px;">
+            <button class="btn-action" id="clearGenresBtn">Clear</button>
+            <button class="btn-action" id="selectAllGenresBtn">Select All</button>
+          </div>
+        </div>
+
+        <!-- Genre Chips -->
+        <div class="genres-wrapper" id="genreContainer"></div>
+
+        <!-- Category Layer Toggles -->
+        <div class="layer-toggles">
+          <button class="layer-toggle-btn active" data-layer="systems">Sound Systems (37)</button>
+          <button class="layer-toggle-btn active" data-layer="toilets">Toilets (40 WC)</button>
+          <button class="layer-toggle-btn active" data-layer="firstaid">First Aid (8)</button>
+          <button class="layer-toggle-btn active" data-layer="welfare">Welfare (5)</button>
+          <button class="layer-toggle-btn active" data-layer="trading">Food & Trading (19)</button>
+          <button class="layer-toggle-btn active" data-layer="stations">Tube Stations</button>
+          <button class="layer-toggle-btn active" data-layer="parade">Parade Route</button>
+          <button class="layer-toggle-btn active" data-layer="boundary">Boundary</button>
         </div>
       </div>
 
-      <!-- Genre Chips -->
-      <div class="genres-wrapper" id="genreContainer"></div>
-
-      <!-- Category Layer Toggles -->
-      <div class="layer-toggles">
-        <button class="layer-toggle-btn active" data-layer="systems">Sound Systems (37)</button>
-        <button class="layer-toggle-btn active" data-layer="toilets">Toilets (40 WC)</button>
-        <button class="layer-toggle-btn active" data-layer="firstaid">First Aid (8)</button>
-        <button class="layer-toggle-btn active" data-layer="welfare">Welfare (5)</button>
-        <button class="layer-toggle-btn active" data-layer="trading">Food & Trading (19)</button>
-        <button class="layer-toggle-btn active" data-layer="stations">Tube Stations</button>
-        <button class="layer-toggle-btn active" data-layer="parade">Parade Route</button>
-        <button class="layer-toggle-btn active" data-layer="boundary">Boundary</button>
-      </div>
+      <!-- Sound Systems List -->
+      <div id="system-list"></div>
     </div>
 
-    <!-- Sound Systems List -->
-    <div id="system-list"></div>
+    <div id="map"></div>
   </div>
-
-  <div id="map"></div>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -908,20 +969,23 @@
       stationMarkersByName[st.name] = { marker: m, lat: st.lat, lng: st.lng };
     });
 
-    // Ticker Click & Close Logic
+    // Targeted Ticker Item Click & Close Logic
     const tickerContent = document.getElementById('tickerContent');
     const tickerCloseBtn = document.getElementById('tickerCloseBtn');
     const travelTicker = document.getElementById('travelTicker');
 
-    tickerContent.addEventListener('click', () => {
-      // Jump to Ladbroke Grove Station as primary alert
-      const target = stationMarkersByName["Ladbroke Grove Station"];
-      if (target) {
-        map.flyTo([target.lat, target.lng], 16, { animate: true, duration: 0.6 });
-        target.marker.openPopup();
+    tickerContent.addEventListener('click', (e) => {
+      const item = e.target.closest('.ticker-item');
+      if (item) {
+        const stationName = item.dataset.station;
+        const target = stationMarkersByName[stationName];
+        if (target) {
+          map.flyTo([target.lat, target.lng], 16, { animate: true, duration: 0.6 });
+          target.marker.openPopup();
 
-        if (window.innerWidth <= 768) {
-          document.getElementById('btn-tab-map').click();
+          if (window.innerWidth <= 768) {
+            document.getElementById('btn-tab-map').click();
+          }
         }
       }
     });
